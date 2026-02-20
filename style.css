@@ -1,0 +1,242 @@
+:root {
+  --color-bg: #F5F5F0;
+  /* オフホワイト: 背景 */
+  --color-ink: #191970;
+  /* ミッドナイトブルー: インク */
+  --color-ink-dark: #2F2F2F;
+  /* ブラック: インク (暗め) */
+  --color-text: #4B3621;
+  /* セピア: 文字 */
+
+  --font-family-japanese: 'Shippori Mincho', serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-japanese);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ペーパーテクスチャの背景 (疑似要素で実装) */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.4;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.header h1 {
+  font-weight: 500;
+  font-size: 3rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+  color: var(--color-ink-dark);
+}
+
+.header p {
+  font-size: 1rem;
+  opacity: 0.6;
+}
+
+.habits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  margin-bottom: 4rem;
+}
+
+.habit-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.habit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(75, 54, 33, 0.1);
+  padding-bottom: 0.5rem;
+}
+
+.habit-name {
+  font-size: 1.3rem;
+  letter-spacing: 0.05em;
+}
+
+.delete-habit-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--color-text);
+  cursor: pointer;
+  opacity: 0.2;
+  transition: opacity 0.3s ease;
+  padding: 0 0.5rem;
+}
+
+.delete-habit-btn:hover {
+  opacity: 0.8;
+}
+
+.habit-calendar {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.calendar-day-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.day-label {
+  font-size: 0.75rem;
+  opacity: 0.4;
+  font-family: sans-serif;
+  letter-spacing: 0;
+}
+
+/* インク・エフェクト付きのカレンダーマス */
+.calendar-day {
+  width: 30px;
+  height: 30px;
+  border: 1px dashed rgba(75, 54, 33, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  background-color: transparent;
+}
+
+/* マスのホバー時: かすかにインクが乗る */
+.calendar-day:hover {
+  background-color: rgba(25, 25, 112, 0.05);
+  border-color: rgba(75, 54, 33, 0.5);
+}
+
+/* 完了時: インクが完全に染みる */
+.calendar-day.done {
+  border-style: solid;
+  border-color: transparent;
+  background-color: var(--color-ink);
+  /* 輪郭をアナログっぽく */
+  filter: url(#inkBleed);
+  /* 少しだけ形をランダムに見せるための工夫 */
+  border-radius: 45% 55% 52% 48% / 50% 48% 52% 50%;
+}
+
+/* フォーム部分 */
+.add-habit-form {
+  display: flex;
+  border-bottom: 1px solid rgba(75, 54, 33, 0.2);
+  padding-bottom: 0.5rem;
+  transition: border-color 0.3s ease;
+}
+
+.add-habit-form:focus-within {
+  border-color: rgba(75, 54, 33, 0.6);
+}
+
+#new-habit-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 1.2rem;
+  color: var(--color-text);
+  outline: none;
+}
+
+#new-habit-input::placeholder {
+  color: rgba(75, 54, 33, 0.4);
+}
+
+#add-habit-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--color-text);
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+  font-family: inherit;
+  padding: 0 0.5rem;
+}
+
+#add-habit-btn:hover {
+  opacity: 1;
+}
+
+/* Ink Spot Animation Class */
+.ink-drop {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  background-color: var(--color-ink);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1);
+  animation: inkSpread 0.9s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+  filter: url(#inkBleed);
+  z-index: 100;
+  opacity: 0.8;
+}
+
+@keyframes inkSpread {
+  0% {
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(4);
+    opacity: 0;
+  }
+}
+
+/* Fade in animation for items */
+.fade-in {
+  animation: fadeIn 0.5s ease backwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
