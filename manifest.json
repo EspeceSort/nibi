@@ -1,0 +1,9 @@
+{
+    "name": "Nibi",
+    "short_name": "Nibi",
+    "description": "「何もない」習慣トラッカー",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#F5F5F0",
+    "theme_color": "#F5F5F0"
+}
