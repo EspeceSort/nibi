@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://especesort.github.io/Nibi/",
+  "homepage": "https://especesort.github.io/nibi/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
